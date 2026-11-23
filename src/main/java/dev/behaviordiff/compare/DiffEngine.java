@@ -117,9 +117,7 @@ public final class DiffEngine {
       if (raw == null || dot <= 0 || dot != raw.lastIndexOf('.') || dot == raw.length() - 1) {
         throw new ContractException(
             ErrorCategory.MALFORMED_INPUT,
-            "approval '"
-                + raw
-                + "' must be table.field, for example orders.destination.");
+            "approval '" + raw + "' must be table.field, for example orders.destination.");
       }
       String table = raw.substring(0, dot);
       String field = raw.substring(dot + 1);
@@ -154,7 +152,10 @@ public final class DiffEngine {
   }
 
   private static List<Map<String, Object>> rowDiffs(
-      String actionId, StepObservation left, StepObservation right, Map<String, Set<String>> approved) {
+      String actionId,
+      StepObservation left,
+      StepObservation right,
+      Map<String, Set<String>> approved) {
     List<Map<String, Object>> changes = new ArrayList<>();
     changes.addAll(tableDiff("orders", "orderId", ORDER_FIELDS, actionId, left, right, approved));
     changes.addAll(
@@ -171,11 +172,13 @@ public final class DiffEngine {
       StepObservation left,
       StepObservation right,
       Map<String, Set<String>> approved) {
-    Map<String, Map<String, Object>> leftBefore = index(left.before().get(table), primaryKey, fields);
+    Map<String, Map<String, Object>> leftBefore =
+        index(left.before().get(table), primaryKey, fields);
     Map<String, Map<String, Object>> leftAfter = index(left.after().get(table), primaryKey, fields);
     Map<String, Map<String, Object>> rightBefore =
         index(right.before().get(table), primaryKey, fields);
-    Map<String, Map<String, Object>> rightAfter = index(right.after().get(table), primaryKey, fields);
+    Map<String, Map<String, Object>> rightAfter =
+        index(right.after().get(table), primaryKey, fields);
     TreeSet<String> keys = new TreeSet<>();
     keys.addAll(leftAfter.keySet());
     keys.addAll(rightAfter.keySet());
@@ -258,7 +261,8 @@ public final class DiffEngine {
     return projected;
   }
 
-  private static List<Map<String, Object>> effectDiffs(StepObservation left, StepObservation right) {
+  private static List<Map<String, Object>> effectDiffs(
+      StepObservation left, StepObservation right) {
     Map<EffectKey, Group> leftGroups = group(left.effects());
     Map<EffectKey, Group> rightGroups = group(right.effects());
     TreeSet<EffectKey> keys = new TreeSet<>();
@@ -345,7 +349,8 @@ public final class DiffEngine {
     Map<EffectKey, Group> groups = new TreeMap<>();
     for (Effect effect : effects) {
       EffectKey key =
-          new EffectKey(effect.actionId(), effect.sink(), effect.effectType(), effect.businessKey());
+          new EffectKey(
+              effect.actionId(), effect.sink(), effect.effectType(), effect.businessKey());
       Group group = groups.computeIfAbsent(key, ignored -> new Group());
       Map<String, Object> payload = strip(effect.payload());
       group.sequences.add(Integer.valueOf(effect.sequence()));

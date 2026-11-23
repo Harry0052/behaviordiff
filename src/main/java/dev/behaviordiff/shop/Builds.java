@@ -48,11 +48,7 @@ public final class Builds {
       default ->
           throw new ContractException(
               ErrorCategory.UNKNOWN_BUILD,
-              "build '"
-                  + id
-                  + "' is not checked in. Known builds: "
-                  + new TreeSet<>(ids())
-                  + ".");
+              "build '" + id + "' is not checked in. Known builds: " + new TreeSet<>(ids()) + ".");
     };
   }
 
@@ -62,8 +58,8 @@ public final class Builds {
     }
 
     @Override
-    protected final StepWork apply(Connection connection, Journey.Action action, DeterministicIds ids)
-        throws SQLException {
+    protected final StepWork apply(
+        Connection connection, Journey.Action action, DeterministicIds ids) throws SQLException {
       requireCancel(action);
       String orderId = orderId(action);
       String requestId = ids.next(action.id());

@@ -163,13 +163,7 @@ public final class JourneyValidator {
       if (!allowed.contains(field)) {
         throw new ContractException(
             ErrorCategory.MALFORMED_INPUT,
-            "unknown field '"
-                + field
-                + "' at "
-                + at
-                + ". Allowed fields: "
-                + allowed
-                + ".");
+            "unknown field '" + field + "' at " + at + ". Allowed fields: " + allowed + ".");
       }
     }
     for (String field : allowed) {
@@ -195,10 +189,7 @@ public final class JourneyValidator {
     if (value.contains("://")) {
       throw new ContractException(
           ErrorCategory.EXTERNAL_SINK,
-          at
-              + "."
-              + field
-              + " contains a URL. Journeys cannot name an external endpoint or sink.");
+          at + "." + field + " contains a URL. Journeys cannot name an external endpoint or sink.");
     }
     return value;
   }

@@ -49,8 +49,7 @@ class CompareCommandTest {
             "--output",
             output.toString());
     assertEquals(1, second.code);
-    assertEquals(
-        new String(again, StandardCharsets.UTF_8), Files.readString(output));
+    assertEquals(new String(again, StandardCharsets.UTF_8), Files.readString(output));
   }
 
   @Test

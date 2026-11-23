@@ -12,7 +12,8 @@ public final class OutputGuard {
   public static Path checked(Path output) {
     if (output == null) {
       throw new ContractException(
-          ErrorCategory.MALFORMED_INPUT, "missing --output. Pass a file path under the working directory.");
+          ErrorCategory.MALFORMED_INPUT,
+          "missing --output. Pass a file path under the working directory.");
     }
     Path cwd = Path.of("").toAbsolutePath().normalize();
     Path target = output.toAbsolutePath().normalize();
@@ -27,7 +28,8 @@ public final class OutputGuard {
     }
     if (Files.isDirectory(target)) {
       throw new ContractException(
-          ErrorCategory.MALFORMED_INPUT, "output '" + output + "' is a directory. Pass a file path.");
+          ErrorCategory.MALFORMED_INPUT,
+          "output '" + output + "' is a directory. Pass a file path.");
     }
     return target;
   }

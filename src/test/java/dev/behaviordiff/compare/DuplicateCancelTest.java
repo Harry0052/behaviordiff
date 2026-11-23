@@ -74,7 +74,8 @@ class DuplicateCancelTest {
   void identicalBuildHasNoChangesAndIsByteStable() {
     byte[] first = CanonicalJson.write(Comparison.run(journey, "good", "good", List.of()).toMap());
     byte[] second = CanonicalJson.write(Comparison.run(journey, "good", "good", List.of()).toMap());
-    assertEquals(new String(first, StandardCharsets.UTF_8), new String(second, StandardCharsets.UTF_8));
+    assertEquals(
+        new String(first, StandardCharsets.UTF_8), new String(second, StandardCharsets.UTF_8));
     Report report = Comparison.run(journey, "good", "good", List.of());
     assertEquals("identical", report.status());
     assertEquals(0, report.exitCode());
@@ -84,7 +85,9 @@ class DuplicateCancelTest {
     byte[] again = CanonicalJson.write(report.toMap());
     byte[] duplicate =
         CanonicalJson.write(Comparison.run(journey, "good", "duplicate-cancel", List.of()).toMap());
-    assertEquals(new String(again, StandardCharsets.UTF_8), new String(CanonicalJson.write(report.toMap()), StandardCharsets.UTF_8));
+    assertEquals(
+        new String(again, StandardCharsets.UTF_8),
+        new String(CanonicalJson.write(report.toMap()), StandardCharsets.UTF_8));
     assertFalse(new String(duplicate, StandardCharsets.UTF_8).contains("req-"));
     assertTrue(new String(duplicate, StandardCharsets.UTF_8).contains("ship-cancel:O-1"));
   }
@@ -187,7 +190,8 @@ class DuplicateCancelTest {
     Report approved = Comparison.run(journey, "good", "reroute", List.of("orders.destination"));
     assertEquals("approved", approved.status());
     assertEquals(0, approved.exitCode());
-    Report still = Comparison.run(journey, "good", "duplicate-cancel", List.of("orders.destination"));
+    Report still =
+        Comparison.run(journey, "good", "duplicate-cancel", List.of("orders.destination"));
     assertEquals("changes", still.status());
   }
 }

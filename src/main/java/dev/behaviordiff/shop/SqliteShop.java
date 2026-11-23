@@ -79,8 +79,8 @@ public abstract class SqliteShop implements ShopBuild {
     }
   }
 
-  protected abstract StepWork apply(Connection connection, Journey.Action action, DeterministicIds ids)
-      throws SQLException;
+  protected abstract StepWork apply(
+      Connection connection, Journey.Action action, DeterministicIds ids) throws SQLException;
 
   protected static void requireCancel(Journey.Action action) {
     if (!"cancel_order".equals(action.name())) {
@@ -97,8 +97,7 @@ public abstract class SqliteShop implements ShopBuild {
   protected static void cancelOrder(
       Connection connection, String orderId, String requestId, String destination, Integer amount)
       throws SQLException {
-    StringBuilder sql =
-        new StringBuilder("UPDATE orders SET status = 'canceled', request_id = ?");
+    StringBuilder sql = new StringBuilder("UPDATE orders SET status = 'canceled', request_id = ?");
     if (destination != null) {
       sql.append(", destination = ?");
     }
@@ -120,13 +119,17 @@ public abstract class SqliteShop implements ShopBuild {
       if (updated != 1) {
         throw new ContractException(
             ErrorCategory.INCOMPLETE_EVIDENCE,
-            "order '" + orderId + "' is not in seed " + dev.behaviordiff.contract.JourneyValidator.SEED
+            "order '"
+                + orderId
+                + "' is not in seed "
+                + dev.behaviordiff.contract.JourneyValidator.SEED
                 + ". No coverage is claimed.");
       }
     }
   }
 
-  protected static void deleteReservations(Connection connection, String orderId) throws SQLException {
+  protected static void deleteReservations(Connection connection, String orderId)
+      throws SQLException {
     try (PreparedStatement statement =
         connection.prepareStatement("DELETE FROM reservations WHERE order_id = ?")) {
       statement.setString(1, orderId);
@@ -134,7 +137,8 @@ public abstract class SqliteShop implements ShopBuild {
     }
   }
 
-  protected static Effect shipping(String orderId, String actionId, int sequence, String requestId) {
+  protected static Effect shipping(
+      String orderId, String actionId, int sequence, String requestId) {
     Map<String, Object> payload = new LinkedHashMap<>();
     payload.put("orderId", orderId);
     payload.put("requestId", requestId);
@@ -143,7 +147,12 @@ public abstract class SqliteShop implements ShopBuild {
   }
 
   protected static Effect email(
-      String orderId, String actionId, int sequence, String requestId, Object template, boolean includeTemplate) {
+      String orderId,
+      String actionId,
+      int sequence,
+      String requestId,
+      Object template,
+      boolean includeTemplate) {
     Map<String, Object> payload = new LinkedHashMap<>();
     payload.put("orderId", orderId);
     if (includeTemplate) {

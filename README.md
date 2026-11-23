@@ -16,8 +16,10 @@ Gradle is provided by the wrapper. No global Gradle or Maven install is required
 From a clean checkout:
 
 ```bash
-./gradlew test --no-daemon
+./gradlew check --no-daemon
 ```
+
+`check` compiles, runs the formatter, and runs the tests. `./gradlew test` runs the tests alone. The measured demo budget and the acceptance results are in [docs/validation.md](docs/validation.md).
 
 Install the command and validate the labeled fixtures. The installed script is the public entry point, so its exit code is the contract code. `./gradlew run` prints the same text and then reports a failed build whenever the app exits non-zero.
 

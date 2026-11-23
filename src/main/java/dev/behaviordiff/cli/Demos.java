@@ -14,17 +14,19 @@ public final class Demos {
   public record Case(String name, String left, String right) {}
 
   public static List<String> names() {
-    return List.copyOf(new TreeSet<>(List.of(
-        "duplicate-cancel",
-        "unexpected-delete",
-        "volatile-destination",
-        "amount-change",
-        "missing-email",
-        "null-vs-absent",
-        "identical-control",
-        "external-sink",
-        "partial-tables",
-        "broken-adapter")));
+    return List.copyOf(
+        new TreeSet<>(
+            List.of(
+                "duplicate-cancel",
+                "unexpected-delete",
+                "volatile-destination",
+                "amount-change",
+                "missing-email",
+                "null-vs-absent",
+                "identical-control",
+                "external-sink",
+                "partial-tables",
+                "broken-adapter")));
   }
 
   public static Case get(String name) {

@@ -6,7 +6,7 @@
 | P02 | PASS | P03 |
 | P03 | PASS | P04 |
 | P04 | PASS | P05 |
-| P05 | not started | |
+| P05 | PASS | P06 |
 | P06 | not started | |
 | P07 | not started | |
 
@@ -88,3 +88,22 @@ Decision carried forward: proceed. Author the demo shop, schema, and scenarios i
 **Open issues:** none for this gate.
 
 **Next phase:** P05
+
+## P05 — Verify correctness, security, and performance
+
+**Phase and status:** P05 PASS
+
+**Files changed:** `build.gradle` (Spotless 8.12.0, google-java-format 1.25.2), formatted Java sources, `src/test/java/dev/behaviordiff/compare/SafeguardTest.java`, `src/test/java/dev/behaviordiff/report/CanonicalJsonTest.java`, `docs/validation.md`, `NOTICE`, `README.md`, `docs/grokbot-progress.md`
+
+**Commands and results:**
+
+- `./gradlew spotlessApply --no-daemon` exit 0 after pinning google-java-format 1.25.2. Version 1.37.0 failed inside Spotless on this JDK with `InvocationTargetException`.
+- `./gradlew check --offline --no-daemon` exit 0. Formatter check passed. 29 tests passed, including truncation, HTML escaping, the 1000 ms comparison budget, the six mutations, the identical control, and the rejection gates.
+- Three fresh `behaviordiff demo --case duplicate-cancel` runs exited 1 in 0.398 s, 0.378 s, and 0.378 s. The outputs were byte-identical to `docs/examples/duplicate-cancel.json` (sha256 `39f4252950f23a59bf31dbdb1e653bec273d8dc9e4cdb726c8e34293939cb138`). Budget is 2 seconds for that command.
+- OSV query on 2026-11-23 returned zero vulnerabilities for the pinned Picocli, sqlite-jdbc, Jackson, and JUnit versions.
+
+**Artifact paths:** `docs/validation.md`, `NOTICE`
+
+**Open issues:** none for this gate. Hosted CI is still local-only until P07. No native sanitizer job, because this repo does not compile C.
+
+**Next phase:** P06

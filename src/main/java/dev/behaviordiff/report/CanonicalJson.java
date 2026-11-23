@@ -45,8 +45,7 @@ public final class CanonicalJson {
         }
         out.append('}');
       }
-      default ->
-          throw new IllegalArgumentException("Cannot encode " + value.getClass().getName());
+      default -> throw new IllegalArgumentException("Cannot encode " + value.getClass().getName());
     }
   }
 

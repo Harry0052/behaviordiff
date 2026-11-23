@@ -52,13 +52,12 @@ public final class DemoCommand implements Callable<Integer> {
       return 3;
     }
     try {
-      Journey journey = new JourneyValidator().parse(ValidateCommand.readCapped(Path.of(Demos.JOURNEY)));
+      Journey journey =
+          new JourneyValidator().parse(ValidateCommand.readCapped(Path.of(Demos.JOURNEY)));
       List<String> approvals = approve == null ? List.of() : approve;
       Report report = Comparison.run(journey, demo.left(), demo.right(), approvals);
       ReportFiles.write(target, report);
-      spec.commandLine()
-          .getOut()
-          .print(TextSummary.format(report, Demos.JOURNEY));
+      spec.commandLine().getOut().print(TextSummary.format(report, Demos.JOURNEY));
       spec.commandLine().getOut().println("export: " + target);
       spec.commandLine().getOut().flush();
       return report.exitCode();
