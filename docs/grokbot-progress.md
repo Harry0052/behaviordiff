@@ -8,7 +8,7 @@
 | P04 | PASS | P05 |
 | P05 | PASS | P06 |
 | P06 | PASS | P07 |
-| P07 | not started | |
+| P07 | PASS | done |
 
 ## P01 — Research overlap and confirm the MVP
 
@@ -128,3 +128,24 @@ Decision carried forward: proceed. Author the demo shop, schema, and scenarios i
 **Open issues:** GitHub-hosted CI has not run yet. That is P07.
 
 **Next phase:** P07
+
+## P07 — Publish and verify on GitHub
+
+**Phase and status:** P07 PASS
+
+**Files changed:** `docs/grokbot-progress.md` (this report). The tagged tree is the parent commit.
+
+**Commands and results:**
+
+- Destination confirmed: `https://github.com/Harry0052/behaviordiff`, visibility PUBLIC, license MIT. The remote is that repository.
+- Pull request: https://github.com/Harry0052/behaviordiff/pull/1 . Not merged.
+- GitHub Actions run https://github.com/Harry0052/behaviordiff/actions/runs/45114686831 completed with conclusion `success` on commit `c7ea68eec4fb4b3f1ec0409d480fe56bd7c26a77`. The job ran `check`, `installDist`, `distZip`, `demo --case duplicate-cancel` (exit 1 required), and `demo --case identical-control`.
+- Annotated tag `v0.1.0` points at that commit (`git rev-parse v0.1.0^{}` is `c7ea68eec4fb4b3f1ec0409d480fe56bd7c26a77`) and is on the remote.
+- A checkout of `v0.1.0` ran `./gradlew installDist --no-daemon` and `./build/install/behaviordiff/bin/behaviordiff demo --case duplicate-cancel`. Exit 1. `out/duplicate-cancel.json` matched the checked-in example, sha256 `39f4252950f23a59bf31dbdb1e653bec273d8dc9e4cdb726c8e34293939cb138`.
+- The distribution zip is uploaded by CI as artifact `behaviordiff-ci`. It is not attached to a separate GitHub Release object. The tag is the release.
+
+**Artifact paths:** tag `v0.1.0`, CI run 45114686831, `docs/examples/duplicate-cancel.json`
+
+**Open issues:** none. `main` is unchanged until the owner merges the pull request.
+
+**Next phase:** none. Stop.
