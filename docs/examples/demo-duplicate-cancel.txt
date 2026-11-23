@@ -1,0 +1,24 @@
+BehaviorDiff 0.1.0
+fixture: fixtures/journeys/cancel-o1.valid.json
+status: changes
+journey: cancel-o1
+seed: seed-cancel-o1
+clock: 2026-01-15T12:00:00Z
+left: good
+right: duplicate-cancel
+earliest changed step: cancel-order
+response changed: false
+units: amountCents in USD cents; quantity in item count
+row reservations key R-1 step cancel-order
+  left delete before {"orderId":"O-1","quantity":1,"reservationId":"R-1","sku":"SKU-1"} after null
+  right none before {"orderId":"O-1","quantity":1,"reservationId":"R-1","sku":"SKU-1"} after {"orderId":"O-1","quantity":1,"reservationId":"R-1","sku":"SKU-1"}
+  changed fields: [*]
+effect shipping cancel_shipment ship-cancel:O-1 step cancel-order
+  count 1 versus 2
+  sequences [1] versus [1, 2]
+  cause: duplicate-idempotency-key
+coverage steps: [cancel-order]
+coverage tables: [orders, reservations]
+coverage sinks: [email, shipping]
+limitation: Coverage describes the observed journey and the configured tables and sinks only.
+export: /workspace/docs/examples/demo-duplicate-cancel.json

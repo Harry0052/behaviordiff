@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "name": "bad-action",
+  "seed": "seed-cancel-o1",
+  "clock": "2026-01-15T12:00:00Z",
+  "actions": [
+    {
+      "id": "teleport",
+      "name": "teleport_order",
+      "input": {
+        "orderId": "O-1"
+      }
+    }
+  ]
+}
