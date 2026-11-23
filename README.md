@@ -1,71 +1,77 @@
 # BehaviorDiff
 
-Compare database writes and in-process shipping and email effects for two checked-in builds of a demo shop. The builds share a seed, a fixed clock, and a deterministic id generator. Reports stay on the contract fields in [docs/data-contract.md](docs/data-contract.md).
+Compare what two local builds of a demo shop write and emit during one
+synthetic order cancellation. Each build gets a fresh SQLite database from the
+same seed, a fixed clock, and a deterministic id generator. Shipping and email
+are in-process sinks. The report lists the earliest changed step, the before
+and after row values, and missing or duplicate effects.
 
-This repository is the narrow MVP described in [docs/project-contract.md](docs/project-contract.md). It does not call a paid service, and it does not ship production records or credentials.
+There is no separate hardware, model, or real-data demo. The fixture demo is
+the product demo.
 
-## Prerequisites
+## Supported platform
 
-- Java 21 (the build refuses to download a JDK; use the JDK already on `PATH`)
+Tested on Linux x86_64 with Java 21. You need:
+
+- Java 21 on `PATH`. The build does not download a JDK.
 - Git
 
-Gradle is provided by the wrapper. No global Gradle or Maven install is required.
+The Gradle wrapper downloads Gradle 9.9.2 from `services.gradle.org` the first
+time. After that, the demo does not fetch remote data. sqlite-jdbc brings its
+own SQLite library.
 
-## Install and test
-
-From a clean checkout:
-
-```bash
-./gradlew check --no-daemon
-```
-
-`check` compiles, runs the formatter, and runs the tests. `./gradlew test` runs the tests alone. The measured demo budget and the acceptance results are in [docs/validation.md](docs/validation.md).
-
-Install the command and validate the labeled fixtures. The installed script is the public entry point, so its exit code is the contract code. `./gradlew run` prints the same text and then reports a failed build whenever the app exits non-zero.
+## Install
 
 ```bash
-./gradlew installDist --quiet --no-daemon
-./build/install/behaviordiff/bin/behaviordiff validate fixtures/journeys/cancel-o1.valid.json
-./build/install/behaviordiff/bin/behaviordiff validate fixtures/journeys/unknown-action.invalid.json
+git clone https://github.com/Harry0052/behaviordiff.git
+cd behaviordiff
+./gradlew installDist --no-daemon
 ```
 
-The valid command exits 0 and prints:
-
-```text
-accepted fixture cancel-o1 seed seed-cancel-o1 actions 1
-```
-
-The invalid command exits 3 and prints an `UNKNOWN_ACTION` error that names `teleport_order`. The hand check is [fixtures/oracle/cancel-o1.md](fixtures/oracle/cancel-o1.md).
-
-## Review a demo case
-
-The sample journey cancels order `O-1`. Amounts are integer USD cents. Quantity is an item count.
+## Demo
 
 ```bash
 ./build/install/behaviordiff/bin/behaviordiff demo --case duplicate-cancel
 ```
 
-Exit 1 means the builds differ. The text on stdout names the earliest changed step, `cancel-order`, the retained reservation `R-1`, and the shipping effect `ship-cancel:O-1` with counts 1 and 2. The cause is the shared idempotency key. Units and the coverage limitation are printed with that finding.
+Exit code 1 is the expected result: the builds differ. The text names step
+`cancel-order`, reservation `R-1` retained by `duplicate-cancel`, and shipping
+effect `ship-cancel:O-1` with counts 1 and 2. Amounts are integer USD cents.
+Quantity is an item count. The limitation printed with the finding is the
+coverage limit: only this journey and the configured tables and sinks.
 
-The machine-readable export defaults to `out/duplicate-cancel.json`. It is canonical JSON and is separate from the text. The finding's `actionId` is the action id in [fixtures/journeys/cancel-o1.valid.json](fixtures/journeys/cancel-o1.valid.json). The hand calculation is [fixtures/oracle/duplicate-cancel.md](fixtures/oracle/duplicate-cancel.md).
+The canonical JSON report is written to `out/duplicate-cancel.json`. It is
+separate from the text. A recorded copy is
+[docs/examples/duplicate-cancel.json](docs/examples/duplicate-cancel.json).
+The hand calculation is
+[fixtures/oracle/duplicate-cancel.md](fixtures/oracle/duplicate-cancel.md).
 
-Compare the good build with itself:
+The identical control exits 0:
 
 ```bash
 ./build/install/behaviordiff/bin/behaviordiff demo --case identical-control
 ```
 
-Exit 0 and status `identical`.
+Its report is `out/identical-control.json` and its status is `identical`.
 
-Approve one documented field. This does not approve any other change:
+## Other checks
 
 ```bash
-./build/install/behaviordiff/bin/behaviordiff demo --case volatile-destination --approve orders.destination
+./gradlew check --no-daemon
 ```
 
-Exit 0 and status `approved`. The report still shows destination `dock-b` and omits volatile request ids.
+`check` runs Spotless, the compiler, and the tests. Validation notes, the
+measured runtime, and the six-case result are in
+[docs/validation.md](docs/validation.md).
 
-A bad case stays readable and does not claim coverage:
+Approve one documented field without hiding anything else:
+
+```bash
+./build/install/behaviordiff/bin/behaviordiff demo \
+  --case volatile-destination --approve orders.destination
+```
+
+A bad fixture or an incomplete setup does not claim coverage:
 
 ```bash
 ./build/install/behaviordiff/bin/behaviordiff demo --case not-a-case
@@ -73,12 +79,33 @@ A bad case stays readable and does not claim coverage:
 ./build/install/behaviordiff/bin/behaviordiff demo --case partial-tables
 ```
 
-`not-a-case` and the malformed file exit 3. `partial-tables` exits 3 with `UNOBSERVED_TABLE` because `reservations` was not observed. The exported JSON has `"coverage": null`.
+Exit codes: 0 identical or fully approved, 1 unapproved changes, 2 incomplete
+observation, 3 rejected input or setup. `--help` lists `validate`, `compare`,
+and `demo`.
 
-Exit codes: 0 identical or fully approved, 1 unapproved changes, 2 incomplete observation, 3 rejected input or setup. `--help` lists `validate`, `compare`, and `demo`.
+## Fixtures
 
-Fixture provenance, checksums, and dependency licenses are in [fixtures/manifest.json](fixtures/manifest.json). Journeys and the seed are authored in this repo and are not fetched at run time.
+Journeys, the seed, and the oracles are authored in this repository under the
+MIT license. They are synthetic. They contain no production records, credentials,
+or personal information. Checksums and dependency coordinates are in
+[fixtures/manifest.json](fixtures/manifest.json). The field contract is
+[docs/data-contract.md](docs/data-contract.md).
 
-## License
+## Package
 
-[MIT](LICENSE)
+```bash
+./gradlew distZip --no-daemon
+```
+
+The zip is `build/distributions/behaviordiff-0.1.0.zip`. It contains the
+application jar, including the seed SQL, and the runtime jars. It does not
+contain test reports or the Gradle cache.
+
+## License and attribution
+
+[MIT](LICENSE). Third-party notices are in [NOTICE](NOTICE).
+
+## Contributing and security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
+Version history is in [CHANGELOG.md](CHANGELOG.md).

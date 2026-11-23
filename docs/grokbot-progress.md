@@ -7,7 +7,7 @@
 | P03 | PASS | P04 |
 | P04 | PASS | P05 |
 | P05 | PASS | P06 |
-| P06 | not started | |
+| P06 | PASS | P07 |
 | P07 | not started | |
 
 ## P01 — Research overlap and confirm the MVP
@@ -107,3 +107,24 @@ Decision carried forward: proceed. Author the demo shop, schema, and scenarios i
 **Open issues:** none for this gate. Hosted CI is still local-only until P07. No native sanitizer job, because this repo does not compile C.
 
 **Next phase:** P06
+
+## P06 — Prepare a reproducible open-source release
+
+**Phase and status:** P06 PASS
+
+**Files changed:** `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`, `.github/workflows/ci.yml`, `docs/grokbot-progress.md`
+
+**Commands and results:**
+
+- Clean copy of the working tree at `/tmp/bd-clean`, excluding `.git`, `build`, `.gradle`, and `out`.
+- `./gradlew installDist check distZip --no-daemon` exit 0. 29 tests passed and Spotless passed.
+- `./build/install/behaviordiff/bin/behaviordiff demo --case duplicate-cancel` exit 1. Report `out/duplicate-cancel.json` matched `docs/examples/duplicate-cancel.json` (sha256 `39f4252950f23a59bf31dbdb1e653bec273d8dc9e4cdb726c8e34293939cb138`).
+- `behaviordiff demo --case identical-control` exit 0, status `identical`.
+- Unpacked `build/distributions/behaviordiff-0.1.0.zip` and ran its `bin/behaviordiff`. Same duplicate-cancel JSON. The application jar contains `seed/seed-cancel-o1.sql`.
+- Tracked text search found no private keys, `.env` files, or credential assignments. The Gradle wrapper jar is the wrapper binary.
+
+**Artifact paths:** `.github/workflows/ci.yml`, `build/distributions/behaviordiff-0.1.0.zip` (generated, not committed), `README.md`, `NOTICE`, `SECURITY.md`
+
+**Open issues:** GitHub-hosted CI has not run yet. That is P07.
+
+**Next phase:** P07
