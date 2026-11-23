@@ -5,7 +5,7 @@
 | P01 | PASS | P02 |
 | P02 | PASS | P03 |
 | P03 | PASS | P04 |
-| P04 | not started | |
+| P04 | PASS | P05 |
 | P05 | not started | |
 | P06 | not started | |
 | P07 | not started | |
@@ -67,3 +67,24 @@ Decision carried forward: proceed. Author the demo shop, schema, and scenarios i
 **Open issues:** none for this gate. The `demo` subcommand is the next workflow.
 
 **Next phase:** P04
+
+## P04 — Ship the user workflow and reports
+
+**Phase and status:** P04 PASS
+
+**Files changed:** `src/main/java/dev/behaviordiff/cli/DemoCommand.java`, `src/main/java/dev/behaviordiff/cli/Demos.java`, `src/main/java/dev/behaviordiff/cli/ReportFiles.java`, `src/main/java/dev/behaviordiff/cli/CompareCommand.java`, `src/main/java/dev/behaviordiff/cli/BehaviorDiff.java`, `src/test/java/dev/behaviordiff/cli/DemoCommandTest.java`, `README.md`, `docs/examples/demo-duplicate-cancel.txt`, `docs/examples/demo-approved.json`, `docs/examples/demo-partial.json`, `docs/grokbot-progress.md`
+
+**Commands and results:**
+
+- `./gradlew test --offline --no-daemon` exit 0. 27 tests passed, including demo inspectability, unknown case, partial tables, field approval, and help.
+- `behaviordiff demo --case duplicate-cancel --output docs/examples/demo-duplicate-cancel.json` exit 1. Stdout is `docs/examples/demo-duplicate-cancel.txt`. The JSON bytes match `docs/examples/duplicate-cancel.json` (sha256 `39f4252950f23a59bf31dbdb1e653bec273d8dc9e4cdb726c8e34293939cb138`). The text names step `cancel-order`, fixture `fixtures/journeys/cancel-o1.valid.json`, and effect `ship-cancel:O-1`.
+- `behaviordiff demo --case not-a-case` exit 3. Stderr starts `MALFORMED_INPUT:` and lists the known cases.
+- `behaviordiff validate fixtures/journeys/malformed.invalid.json` exit 3. Stderr starts `MALFORMED_INPUT:` and says the fixture is not valid JSON.
+- `behaviordiff demo --case partial-tables --output docs/examples/demo-partial.json` exit 3. `UNOBSERVED_TABLE` for `reservations`. The JSON has `"coverage": null`.
+- `behaviordiff demo --case volatile-destination --approve orders.destination --output docs/examples/demo-approved.json` exit 0 and status `approved`.
+
+**Artifact paths:** `docs/examples/demo-duplicate-cancel.txt`, `docs/examples/duplicate-cancel.json`, `docs/examples/demo-partial.json`, `docs/examples/demo-approved.json`
+
+**Open issues:** none for this gate.
+
+**Next phase:** P05

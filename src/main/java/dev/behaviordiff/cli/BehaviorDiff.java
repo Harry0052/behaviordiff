@@ -9,7 +9,7 @@ import picocli.CommandLine;
     description = "Compare database writes and in-process effects of two local demo-shop builds.",
     exitCodeOnInvalidInput = 3,
     exitCodeOnExecutionException = 2,
-    subcommands = {ValidateCommand.class, CompareCommand.class})
+    subcommands = {ValidateCommand.class, CompareCommand.class, DemoCommand.class})
 public final class BehaviorDiff implements Runnable {
   @Override
   public void run() {

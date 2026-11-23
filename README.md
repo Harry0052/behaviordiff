@@ -35,6 +35,46 @@ accepted fixture cancel-o1 seed seed-cancel-o1 actions 1
 
 The invalid command exits 3 and prints an `UNKNOWN_ACTION` error that names `teleport_order`. The hand check is [fixtures/oracle/cancel-o1.md](fixtures/oracle/cancel-o1.md).
 
+## Review a demo case
+
+The sample journey cancels order `O-1`. Amounts are integer USD cents. Quantity is an item count.
+
+```bash
+./build/install/behaviordiff/bin/behaviordiff demo --case duplicate-cancel
+```
+
+Exit 1 means the builds differ. The text on stdout names the earliest changed step, `cancel-order`, the retained reservation `R-1`, and the shipping effect `ship-cancel:O-1` with counts 1 and 2. The cause is the shared idempotency key. Units and the coverage limitation are printed with that finding.
+
+The machine-readable export defaults to `out/duplicate-cancel.json`. It is canonical JSON and is separate from the text. The finding's `actionId` is the action id in [fixtures/journeys/cancel-o1.valid.json](fixtures/journeys/cancel-o1.valid.json). The hand calculation is [fixtures/oracle/duplicate-cancel.md](fixtures/oracle/duplicate-cancel.md).
+
+Compare the good build with itself:
+
+```bash
+./build/install/behaviordiff/bin/behaviordiff demo --case identical-control
+```
+
+Exit 0 and status `identical`.
+
+Approve one documented field. This does not approve any other change:
+
+```bash
+./build/install/behaviordiff/bin/behaviordiff demo --case volatile-destination --approve orders.destination
+```
+
+Exit 0 and status `approved`. The report still shows destination `dock-b` and omits volatile request ids.
+
+A bad case stays readable and does not claim coverage:
+
+```bash
+./build/install/behaviordiff/bin/behaviordiff demo --case not-a-case
+./build/install/behaviordiff/bin/behaviordiff validate fixtures/journeys/malformed.invalid.json
+./build/install/behaviordiff/bin/behaviordiff demo --case partial-tables
+```
+
+`not-a-case` and the malformed file exit 3. `partial-tables` exits 3 with `UNOBSERVED_TABLE` because `reservations` was not observed. The exported JSON has `"coverage": null`.
+
+Exit codes: 0 identical or fully approved, 1 unapproved changes, 2 incomplete observation, 3 rejected input or setup. `--help` lists `validate`, `compare`, and `demo`.
+
 Fixture provenance, checksums, and dependency licenses are in [fixtures/manifest.json](fixtures/manifest.json). Journeys and the seed are authored in this repo and are not fetched at run time.
 
 ## License

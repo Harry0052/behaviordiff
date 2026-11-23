@@ -1,0 +1,1 @@
+{"category":"UNOBSERVED_TABLE","coverage":null,"message":"build 'partial-tables' does not observe [reservations]. Both orders and reservations are required, so this run has no coverage.","schemaVersion":"1","status":"rejected"}

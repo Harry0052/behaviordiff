@@ -5,9 +5,7 @@ import dev.behaviordiff.compare.Report;
 import dev.behaviordiff.contract.ContractException;
 import dev.behaviordiff.contract.Journey;
 import dev.behaviordiff.contract.JourneyValidator;
-import dev.behaviordiff.report.CanonicalJson;
 import dev.behaviordiff.report.TextSummary;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,31 +53,17 @@ public final class CompareCommand implements Callable<Integer> {
       Journey parsed = new JourneyValidator().parse(bytes);
       List<String> approvals = approve == null ? List.of() : approve;
       Report report = Comparison.run(parsed, left, right, approvals);
-      write(target, report);
+      ReportFiles.write(target, report);
       spec.commandLine().getOut().print(TextSummary.format(report, journey.toString()));
       spec.commandLine().getOut().flush();
       return report.exitCode();
     } catch (ContractException ex) {
       spec.commandLine().getErr().println(ex.format());
-      write(target, Report.rejected(ex));
+      ReportFiles.write(target, Report.rejected(ex));
       return 3;
     } catch (RuntimeException ex) {
       spec.commandLine().getErr().println("INCOMPLETE_EVIDENCE: " + ex.getMessage());
       return 2;
-    }
-  }
-
-  private static void write(Path target, Report report) {
-    try {
-      if (target.getParent() != null) {
-        Files.createDirectories(target.getParent());
-      }
-      Files.write(target, CanonicalJson.write(report.toMap()));
-    } catch (java.io.IOException ex) {
-      throw new ContractException(
-          dev.behaviordiff.contract.ErrorCategory.INCOMPLETE_EVIDENCE,
-          "cannot write report '" + target + "': " + ex.getMessage(),
-          ex);
     }
   }
 }
