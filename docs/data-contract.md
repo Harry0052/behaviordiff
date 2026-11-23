@@ -43,12 +43,12 @@ UTF-8 canonical JSON: object keys sorted, no insignificant whitespace, U+003C U+
 
 Successful statuses are `identical`, `changes`, and `approved`. They carry:
 
-- `schemaVersion`, `journey`, `seed`, `leftBuild`, `rightBuild`, `status`
+- `schemaVersion`, `journey`, `seed`, `clock`, `leftBuild`, `rightBuild`, `status`
 - `earliestChangedStep` (string or null)
 - `responseChanged` (boolean)
 - `approvals` (array of `table.field` strings)
 - `units.amountCents` = `USD cents`, `units.quantity` = `item count`
-- `rowChanges` sorted by action id, table, key. Each entry has `leftOp` and `rightOp` of `insert`, `update`, `delete`, or `none`, plus `leftBefore`, `leftAfter`, `rightBefore`, `rightAfter`. A missing row is JSON null. Present rows use camelCase contract fields and omit `requestId`. `changedFields` lists the non-volatile fields that differ.
+- `rowChanges` sorted by action id, table, key. Each entry has `leftOp` and `rightOp` of `insert`, `update`, `delete`, or `none`, plus `leftBefore`, `leftAfter`, `rightBefore`, `rightAfter`. A missing row is JSON null. Present rows use camelCase contract fields and omit `requestId`. `changedFields` lists the non-volatile fields that differ. `*` means the row appeared or disappeared and cannot be approved as a field change. `approved` is true only when every changed field was named with `--approve`.
 - `effectChanges` sorted by action id, sink, effect type, business key. Counts are the observed multiplicity. `cause` is one of `duplicate-idempotency-key`, `missing-effect`, `extra-effect`, `payload`, `null-vs-absent`.
 - `coverage.steps`, `coverage.tables`, `coverage.sinks`, `coverage.seed`, and `coverage.limitation`.
 

@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | P01 | PASS | P02 |
 | P02 | PASS | P03 |
-| P03 | not started | |
+| P03 | PASS | P04 |
 | P04 | not started | |
 | P05 | not started | |
 | P06 | not started | |
@@ -49,3 +49,21 @@ Decision carried forward: proceed. Author the demo shop, schema, and scenarios i
 **Open issues:** none for this gate. Report JSON is specified and not produced yet.
 
 **Next phase:** P03
+
+## P03 — Build the working core
+
+**Phase and status:** P03 PASS
+
+**Files changed:** `src/main/java/dev/behaviordiff/shop/**`, `src/main/java/dev/behaviordiff/compare/**`, `src/main/java/dev/behaviordiff/report/**`, `src/main/java/dev/behaviordiff/cli/CompareCommand.java`, `src/main/java/dev/behaviordiff/cli/OutputGuard.java`, `src/main/java/dev/behaviordiff/cli/BehaviorDiff.java`, `src/main/resources/seed/seed-cancel-o1.sql`, `src/test/java/dev/behaviordiff/compare/DuplicateCancelTest.java`, `src/test/java/dev/behaviordiff/cli/CompareCommandTest.java`, `fixtures/oracle/duplicate-cancel.md`, `docs/examples/duplicate-cancel.json`, `docs/examples/identical.json`, `docs/data-contract.md`, `docs/grokbot-progress.md`
+
+**Commands and results:**
+
+- `./gradlew test --no-daemon` exit 0. 22 tests passed. The duplicate-cancel test checks effect counts 1 and 2 for `ship-cancel:O-1`, retained reservation `R-1`, and a byte-stable `good` versus `good` report with an empty change list. Hidden deletion, destination, amount, missing effect, null versus absent, external sink, unobserved table, and broken adapter are covered.
+- `./build/install/behaviordiff/bin/behaviordiff compare --journey fixtures/journeys/cancel-o1.valid.json --left good --right duplicate-cancel --output docs/examples/duplicate-cancel.json` exit 1. Earliest step `cancel-order`, reservation `R-1` deleted on the left and retained on the right, effect cause `duplicate-idempotency-key`. The file does not contain `req-`.
+- The same command with `--left good --right good --output docs/examples/identical.json` exit 0 and status `identical`.
+
+**Artifact paths:** `docs/examples/duplicate-cancel.json`, `docs/examples/identical.json`, `fixtures/oracle/duplicate-cancel.md`
+
+**Open issues:** none for this gate. The `demo` subcommand is the next workflow.
+
+**Next phase:** P04
