@@ -17,7 +17,7 @@ The first task is: cancel synthetic order `O-1` on build `good` and build `dupli
 | Picocli 4.7.7 | CLI | Maven Central `info.picocli:picocli` | Apache-2.0 |
 | sqlite-jdbc 3.54.1.0 | Disposable databases | Maven Central `org.xerial:sqlite-jdbc` | Apache-2.0; bundled SQLite is public domain |
 | jackson-databind 2.23.0 | JSON contracts and canonical reports | Maven Central | Apache-2.0 |
-| JUnit Jupiter 6.1.3 | Tests only | Maven Central | EPL-2.0 |
+| JUnit Jupiter 6.1.3 and JUnit Platform launcher 6.1.3 | Tests only | Maven Central | EPL-2.0 |
 
 No remote fixture is fetched at run time. No service credentials are required.
 

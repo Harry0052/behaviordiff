@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-11-23",
+  "generation": {
+    "method": "hand-authored JSON and Markdown in this repository",
+    "seed": "seed-cancel-o1",
+    "prng": "none",
+    "runtimeFetch": false
+  },
+  "terms": "Synthetic shop data under the repository MIT license. No production records, credentials, or personal information.",
+  "fixtures": [
+    {
+      "path": "fixtures/journeys/cancel-o1.valid.json",
+      "sha256": "9e1b3d2a13d85685aa194bdedb75a9f49964f81c9b5c45c49f7386acc03c130a",
+      "role": "valid journey"
+    },
+    {
+      "path": "fixtures/journeys/unknown-action.invalid.json",
+      "sha256": "73fbd04cd9267109eb4170b3f3c6d4b2337339581193f0b7ae994a7aeab0e933",
+      "role": "invalid journey, unknown action"
+    },
+    {
+      "path": "fixtures/journeys/malformed.invalid.json",
+      "sha256": "a6fb08fda1acb957b6116bd37811a1fe41a01611c0631edbf786d6889a27a55c",
+      "role": "invalid journey, truncated JSON"
+    },
+    {
+      "path": "fixtures/oracle/cancel-o1.md",
+      "sha256": "9fd03ace653ca04d081976e9b29f91aad26a50deaf30df1118222afb409b0bb3",
+      "role": "human oracle for validation"
+    }
+  ],
+  "dependencies": [
+    {
+      "coordinate": "info.picocli:picocli:4.7.7",
+      "license": "Apache-2.0",
+      "source": "https://repo.maven.apache.org/maven2/info/picocli/picocli/4.7.7/"
+    },
+    {
+      "coordinate": "org.xerial:sqlite-jdbc:3.54.1.0",
+      "license": "Apache-2.0",
+      "bundledSqlite": "public domain",
+      "source": "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.54.1.0/"
+    },
+    {
+      "coordinate": "com.fasterxml.jackson.core:jackson-databind:2.23.0",
+      "license": "Apache-2.0",
+      "source": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.23.0/"
+    },
+    {
+      "coordinate": "org.junit.jupiter:junit-jupiter:6.1.3",
+      "license": "EPL-2.0",
+      "scope": "test",
+      "source": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter/6.1.3/"
+    },
+    {
+      "coordinate": "org.junit.platform:junit-platform-launcher:6.1.3",
+      "license": "EPL-2.0",
+      "scope": "test",
+      "source": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/6.1.3/"
+    }
+  ]
+}
